@@ -10,7 +10,7 @@ export interface SourceAttributeChild {
    name: string; 
 }
 // 来源单数据 接口
-export interface SourceAttriButeItem {
+export interface SourceAttriButeItem<Id = 'id', Name = 'name'> {
   name: string;
   id: string;
   items: SourceAttributeChild[];
@@ -45,6 +45,6 @@ export interface DimensionaAttribute {
 }
 // sku表格表单数据源 单个
 export interface SkuTableItem {
-   attributes: Omit<CheckedAttributeItem, 'items'>;
+   attributes: string[] | number[] | (string | number)[];
    [key: string]: string | number | Record<string, any> 
 }

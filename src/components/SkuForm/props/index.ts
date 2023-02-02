@@ -1,9 +1,9 @@
 import { PropType } from 'vue';
-import { GlobalThemeOverrides, lightTheme, GlobalTheme } from 'naive-ui'
-import { SourceAttriButeItem } from '../types/index'
+import { GlobalThemeOverrides, lightTheme, GlobalTheme, configProviderProps } from 'naive-ui'
+import { SkuTableItem, SourceAttriButeItem } from '../types/index'
 import { SkeletonItem } from '../types/skeleton';
 
-export const SkuFormProps = {
+export const ProviderConfigProps = {
   // 主题配置 参考naive-ui
   themeOverrides: {
     type: Object as PropType<GlobalThemeOverrides>,
@@ -34,6 +34,31 @@ export const SkuFormProps = {
     type: Object as PropType<GlobalTheme>,
     default: () => lightTheme,
   },
+}
+
+// sku表格属性
+export const SkuFormTableProps = {
+  // 表格文字位置
+  tableAlign: {
+    type: String as PropType<'left' | 'right' | 'center'>,
+    default: 'left'
+  },
+  tableRowKey: {
+    type: String as PropType<string>,
+    default: 'id',
+  },
+  tableBordered: {
+    type: Boolean as PropType<boolean>,
+    default: true,
+  },
+  tableSingleLine: {
+    type: Boolean as PropType<boolean>,
+    default: false,
+  }
+}
+
+export const SkuFormProps = {
+  ...configProviderProps,
   // 以上为表单全局化配置
   // 从现在开始，为表单逻辑props
   /* 规格来源 */  
@@ -53,18 +78,8 @@ export const SkuFormProps = {
   },
   /* 已填写规格数据 受控(v-model:sku) | 非受控(:sku onUpdate:sku) */
   sku: {
-    type: Array as PropType<Record<string, any>[]>,
+    type: Array as PropType<SkuTableItem[]>,
     default: () => [],
   },
-  separator: {
-    type: String as PropType<string>,
-    default: ';'
-  },
-  // sku表格表单属性
-  // 表格文字位置
-  tableAlign: {
-    type: String as PropType<'left' | 'right' | 'center'>,
-    default: 'left'
-  }    
-   
+  ...SkuFormTableProps,
 }

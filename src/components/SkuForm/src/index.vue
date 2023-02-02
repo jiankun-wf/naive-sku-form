@@ -1,21 +1,39 @@
 <script setup lang='ts'>
- import { NForm, NFormItem, NInput, NConfigProvider, NCard, NGrid, NGridItem, NCheckbox, NButton, NInputGroup, DataTableColumn, NDataTable } from 'naive-ui';
- import { ref, computed, h, unref, watchEffect, reactive } from 'vue';
+ import { 
+   NForm, 
+   NInput, 
+   NConfigProvider, 
+   NCard, 
+   NGrid, 
+   NGridItem, 
+   NCheckbox, 
+   NButton, 
+   NInputGroup, 
+   DataTableColumn, 
+   NDataTable, 
+ } from 'naive-ui';
+ import { ref, computed, h, unref, watch } from 'vue';
  import { SkuFormProps } from '../props/index'
  import { AttributeListToDimensiona, RenderSkeletonColumn, createAttributeList, randomId } from '../utils/index';
 
  // types
+ import type { FormItemRule, FormValidationError } from 'naive-ui';
  import { CheckedAttributeItem, DimensionaAttribute, ReactiveSourceAttriButeItem, SkuTableItem } from '../types/index'
+ import { v4 } from 'uuid';
+ import { CreateRowKey } from 'naive-ui/es/data-table/src/interface';
 
  const emit = defineEmits<{
     (e: 'update:selectedAttribute', attributes: CheckedAttributeItem[]): void;
+    (e: 'update:sku', skuData: SkuTableItem[] ): void;
  }>()
 
  const props = defineProps(SkuFormProps);
 
  const attributesList = ref<ReactiveSourceAttriButeItem[]>(createAttributeList(props.sourceAttributes));
 
- const skuListData = ref<Record<string, any>[]>(props.sku);
+ const skuListData = ref<SkuTableItem[]>(props.sku);
+
+ const skuFormRef = ref<any>(null);
   
 
  const handleAddAttributeChild = (attr: ReactiveSourceAttriButeItem) => {
@@ -43,22 +61,38 @@
     }, [[]])
 
     return resultTableData.map(attrs => {
-      const result: Record<string, any> = {
+      const result: SkuTableItem = {
 		    attributes: []
 		  };
 		
 		  attrs.forEach(attr => {
-		    result.attributes.push(attr.attrId);
+		    result.attributes = [ ...result.attributes, attr.attrId ];
 		    result[attr.attrId] = attr.name;
 		    result[attr.attrName] = attr.name;	
 		  }) 
       props.skeleton.forEach(ske => {
-        result[ske.key] = ske.defaultValue || undefined;
+        result[ske.key] = ske.defaultValue;
       })
+      result.id = v4();
 		  return result;
     })
  }
 
+ // RowKey  
+ const createTableRowKey: CreateRowKey<any> = (rowData: any) => {
+  return rowData[props.tableRowKey];
+ }
+ // ConfigProvider 配置
+ const GetConfigProviderProps = computed(() => {
+   return {
+     themeOverrides: props.themeOverrides,
+     clsPrefix: props.clsPrefix,
+     breakpoints: props.breakpoints,
+     theme: props.theme,
+     inlineThemeDisabled: props.inlineThemeDisabled,
+     tag: props.tag,
+   }
+ })
 
   //  相同规格名 不可添加
   const AttributeDisabled = computed(() => {
@@ -107,28 +141,44 @@
       ...RenderSkeletonColumn(props.skeleton),
     ]
  })
-
+ //  绑定的表单 
  const FormModel = computed(() => {
   console.log(unref(skuListData));
    return { sku: unref(skuListData) };
  })
 
- watchEffect(() => {
+ watch(() =>CheckedAttribute, () => {
    emit('update:selectedAttribute', unref(CheckedAttribute));
    if(unref(CheckedAttribute).length) {
       const data = createSkuTableData();
       skuListData.value = data;
+   } else {
+      skuListData.value = [{
+        attributes: []
+      }]  
    }
- })
+ }, { deep: true })
 
-//  const GetSkuFOrmTableData = computed()
+ watch(() => FormModel, () => {
+    emit('update:sku', unref(FormModel).sku);
+ }, { deep: true })
+
+//  暴漏验证方法
+defineExpose({
+  validate(validateCallback?: (errors?: FormValidationError[]) => void, shouldRuleBeApplied?:(rule: FormItemRule ) => boolean ){
+    return unref(skuFormRef)?.validate(validateCallback, shouldRuleBeApplied)
+  },
+  restoreValidation(): void{
+    return unref(skuFormRef)?.restoreValidation();  
+  }
+})
 
 </script>
 
 <template>
     <div class="sku-navie-form">
-     <NConfigProvider abstract v-bind="props">
-
+     <NConfigProvider abstract v-bind="GetConfigProviderProps">
+      <!-- 头部 -->
       <div class="sku-attribute-container">
         <NGrid :x-gap="20" :y-gap="20" :cols="4" >
             <NGridItem v-for="attr in attributesList" :key="attr.name" >
@@ -146,9 +196,17 @@
             </NGridItem>
         </NGrid>
       </div>
+      <!-- 表格表单 -->
       <div class="sku-structure-container">
-         <NForm :model="FormModel">
-            <NDataTable :columns="GetSkuFormTableColumns" :data="skuListData" size="small"></NDataTable>
+         <NForm ref="skuFormRef" :model="FormModel">
+            <NDataTable 
+              :row-key="createTableRowKey" 
+              :columns="GetSkuFormTableColumns" 
+              :bordered="props.tableBordered"
+              :single-line="props.tableSingleLine"
+              :data="skuListData" 
+              size="small"
+            ></NDataTable>
          </NForm>
       </div>
      </NConfigProvider> 

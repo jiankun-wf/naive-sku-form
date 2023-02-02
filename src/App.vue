@@ -1,9 +1,7 @@
 <script setup lang="ts">
- import { h } from 'vue';
  import SkuForm from './components/SkuForm';
- import { SourceAttriButeItem } from './components/SkuForm/types'
+ import { CheckedAttributeItem, SkuTableItem, SourceAttriButeItem } from './components/SkuForm/types'
  import { SkeletonItem  } from './components/SkuForm/types/skeleton'
- import { NGradientText } from 'naive-ui';
 
 
  const sourceAttributes: SourceAttriButeItem[] = [
@@ -16,46 +14,58 @@
     {
       key: 'price',
       component: 'InputNumber',
-      title() {
-        return h(
-          'div',
-          {  },
-          [
-            h(NGradientText, { type: 'error' }, '*'),
-            h('span', { style: { marginLeft: '4px' } }, '价格'),
-          ]
-        )
-      },
+      title: '商品价格',
       componentProps: {
         min: 0.01,
         showButton: false,  
         placeholder: '请输入价格',
         precision: 2,
       },
-      rules: [{ required: true, message: '价格须大于等于0.01元', type: 'number', trigger: ['blur'] }]
+      rules: [{ required: true, message: '请输入商品价格', type: 'number', trigger: ['blur'] }],
+      titleRequireMark: true,
+      titleHelpMessage: '价格须大于等于0.01元',
     },
     {
       key: 'inventory',
       component: 'InputNumber',
-      title() {
-        return h(
-          'div',
-          {  },
-          [
-            h(NGradientText, { type: 'error' }, '*'),
-            h('span', { style: { marginLeft: '4px' } }, '库存'),
-          ]
-        )
-      },
+      title: '商品库存',
       componentProps: {
         placeholder: '请输入库存',
         min: 0,
         showButton: false,  
         precision: 0,
       },
-      rules: [{ required: true, message: '库存须大于等于0', type: 'number', trigger: ['blur'] }]
+      rules: [{ required: true, message: '请输入商品库存', type: 'number', trigger: ['blur'] }],
+      titleRequireMark: true,
+      titleHelpMessage: '库存须大于等于0',
+      defaultValue: 0,
     },
+    {
+      key: 'rate',
+      component: 'Rate',
+      title: '历史评分',
+      rules: [{ required: false, message: '请选择商品评分', type: 'number', trigger: ['blur'] }],
+    },
+    {
+      key: 'cover',
+      component: 'ImageUpload',
+      componentProps: {
+        action: 'https://www.mocky.io/v2/5e4bafc63100007100d8b70f',
+        listType: 'image-card',
+        max: 1,
+      },
+      title: '商品图',
+      rules: [{ required: true, message: '请上传商品图', type: 'array' }]
+    }
   ]
+
+  const handleUpdateSku = (val: SkuTableItem[]) => {
+     console.log(val, 'sku');
+  }
+
+  const handleUpdateSelectedAttrs = (val: CheckedAttributeItem[]) => {
+    console.log(val, 'select-attribute')
+  }
 </script>
 
 <template>
@@ -63,6 +73,9 @@
     class="sku-form-demo"
     :source-attributes="sourceAttributes"
     :skeleton="sourceSkeleton"
+    :inline-theme-disabled="true"
+    @update:sku="handleUpdateSku"
+    @update:selected-attribute="handleUpdateSelectedAttrs"
   ></SkuForm>
 </template>
 
