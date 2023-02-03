@@ -12,20 +12,23 @@
    DataTableColumn, 
    NDataTable, 
  } from 'naive-ui';
- import { ref, computed, h, unref, watch } from 'vue';
+ import { ref, computed, h, unref, watch, onMounted, onBeforeMount } from 'vue';
  import { SkuFormProps } from '../props/index'
  import { AttributeListToDimensiona, RenderSkeletonColumn, createAttributeList, randomId } from '../utils/index';
+ // hooks
+ import { useContainerStyle } from '../hooks/inlineStyle'; 
 
  // types
  import type { FormItemRule, FormValidationError } from 'naive-ui';
  import { CheckedAttributeItem, DimensionaAttribute, ReactiveSourceAttriButeItem, SkuTableItem } from '../types/index'
  import { v4 } from 'uuid';
  import { CreateRowKey } from 'naive-ui/es/data-table/src/interface';
-
+  
+ const [styleMount, styleUnmount] = useContainerStyle();
  const emit = defineEmits<{
     (e: 'update:selectedAttribute', attributes: CheckedAttributeItem[]): void;
     (e: 'update:sku', skuData: SkuTableItem[] ): void;
- }>()
+ }>();
 
  const props = defineProps(SkuFormProps);
 
@@ -173,6 +176,14 @@ defineExpose({
   }
 })
 
+onMounted(() => {
+  styleMount();
+})
+
+onBeforeMount(() => {
+  styleUnmount();
+})
+
 </script>
 
 <template>
@@ -212,13 +223,3 @@ defineExpose({
      </NConfigProvider> 
     </div>
 </template>
-
-<style>
-.sku-navie-form {
-  margin: 12px;
-  padding: 12px;
-}
-.sku-structure-container {
-    margin-top: 20px;
-}
-</style>

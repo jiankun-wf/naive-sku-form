@@ -5,7 +5,7 @@
 
 
  const sourceAttributes: SourceAttriButeItem[] = [
-   { name: '颜色', id: '1', disabled: false, items: [{ name: '胭脂', id: '1-1' }, { name: '禅', id: '1-2' }, { name: '远山黛', id: '1-3' }] }, 
+   { name: '颜色', id: '1', disabled: false, items: [{ name: '胭脂', id: '1-1' }, { name: '朱青', id: '1-2' }, { name: '远山黛', id: '1-3' }, { name: '梅染', id: '1-4' }] }, 
    { name: '内存', id: '2', disabled: false, items: [{ name: '128G', id: '128G' }, { name: '256G', id: '256G' }, { name: '512G', id: '512G' }, { name: '1T', id: '1T' }] },
    { name: '运营商', id: '3', disabled: true, items: [{ name: '电信', id: 'dx' }, { name: '联通', id: 'lt' }, { name: '移动', id: 'yd' }] }
   ]
@@ -78,10 +78,3 @@
     @update:selected-attribute="handleUpdateSelectedAttrs"
   ></SkuForm>
 </template>
-
-<style>
-.sku-form-demo {
-  width: 75%;
-  margin: 0 auto;
-}
-</style>
