@@ -7,7 +7,7 @@ export const useContainerStyle = () => {
     padding: '12px',
     margin: '12px'
   }, [
-      c('.sku-structure-container ', {
+      c('.sku-structure-container', {
         marginTop: '20px'
       })
      ])

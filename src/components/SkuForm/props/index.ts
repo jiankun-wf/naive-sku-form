@@ -4,6 +4,10 @@ import { SkuTableItem, SourceAttriButeItem } from '../types/index'
 import { SkeletonItem } from '../types/skeleton';
 
 export const ProviderConfigProps = {
+  abstract: {
+    type: Boolean as PropType<boolean>,
+    default: true,
+  },
   // 主题配置 参考naive-ui
   themeOverrides: {
     type: Object as PropType<GlobalThemeOverrides>,
@@ -54,6 +58,10 @@ export const SkuFormTableProps = {
   tableSingleLine: {
     type: Boolean as PropType<boolean>,
     default: false,
+  },
+  tableSize: {
+    type: String as PropType<'large' | 'medium' | 'small' | undefined>,
+    default: 'small',
   }
 }
 

@@ -1,16 +1,13 @@
-
-import { ConfigProviderProps } from 'naive-ui'
-export type IConfigProviderProps = Omit<ConfigProviderProps, 'abstract'> 
-
-
+import { ConfigProviderProps } from "naive-ui";
+export type IConfigProviderProps = Omit<ConfigProviderProps, "abstract">;
 
 // 来源单数据 子选项接口
 export interface SourceAttributeChild {
-   id: string;
-   name: string; 
+  id: string;
+  name: string;
 }
 // 来源单数据 接口
-export interface SourceAttriButeItem<Id = 'id', Name = 'name'> {
+export interface SourceAttriButeItem<Id = "id", Name = "name"> {
   name: string;
   id: string;
   items: SourceAttributeChild[];
@@ -32,19 +29,19 @@ export interface ReactiveSourceAttriButeItem {
 }
 
 export interface CheckedAttributeItem {
-   id: string;
-   name: string;
-   items: Omit<CheckedAttributeItem, 'items'>[];
+  id: string;
+  name: string;
+  items: Omit<CheckedAttributeItem, "items">[];
 }
 // 二维规格转化数据单个
 export interface DimensionaAttribute {
-   attrName: string;
-   attrId: string;
-   name: string;
-   id: string;
+  attrName: string;
+  attrId: string;
+  name: string;
+  id: string;
 }
 // sku表格表单数据源 单个
 export interface SkuTableItem {
-   attributes: string[] | number[] | (string | number)[];
-   [key: string]: string | number | Record<string, any> 
+  attributes: string[] | number[] | (string | number)[];
+  [key: string]: string | number | Record<string, any>;
 }

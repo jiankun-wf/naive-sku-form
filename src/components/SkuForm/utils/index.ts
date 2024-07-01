@@ -50,6 +50,8 @@ export function AttributeListToDimensiona(attrs: CheckedAttributeItem[]) {
   }, [])
 }
 
+const b: Recordable = {}
+
 // 根据骨架列，生成渲染函数
 export function RenderSkeletonColumn(skeletons: SkeletonItem[]): DataTableColumn[]  {
   return skeletons.map(skeleton => {
